@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Medicine Identifier</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>💊 Medicine Identifier</h1>
+        <p class="subtitle">Upload medicine strip/box photo to identify it</p>
+
+        <div class="upload-area">
+            <p>📷 Select medicine image</p>
+            <input type="file" id="imageInput" accept="image/*">
+        </div>
+
+        <button onclick="predict()">🔍 Identify Medicine</button>
+
+        <div class="loading" id="loading">⏳ Analyzing image...</div>
+
+        <div id="result" style="display:none">
+            <h2>✅ Result</h2>
+            <div class="info-row"><span class="label">Medicine Name: </span><span id="name"></span></div>
+            <div class="info-row"><span class="label">Composition: </span><span id="composition"></span></div>
+            <div class="info-row"><span class="label">Uses: </span><span id="uses"></span></div>
+            <div class="info-row"><span class="label">Side Effects: </span><span id="side_effects"></span></div>
+            <div class="info-row"><span class="label">Manufacturer: </span><span id="manufacturer"></span></div>
+            <div class="info-row"><span class="label">Confidence: </span><span id="confidence"></span>%</div>
+        </div>
+    </div>
+
+    <script>
+        async function predict() {
+            const file = document.getElementById('imageInput').files[0];
+            if (!file) { alert('Please select an image!'); return; }
+
+            document.getElementById('loading').style.display = 'block';
+            document.getElementById('result').style.display = 'none';
+
+            const formData = new FormData();
+            formData.append('image', file);
+
+            const response = await fetch('/predict', {
+                method: 'POST',
+                body: formData
+            });
+
+            const data = await response.json();
+            document.getElementById('loading').style.display = 'none';
+
+            if (data.success) {
+                document.getElementById('name').textContent = data.medicine_name;
+                document.getElementById('composition').textContent = data.composition;
+                document.getElementById('uses').textContent = data.uses;
+                document.getElementById('side_effects').textContent = data.side_effects;
+                document.getElementById('manufacturer').textContent = data.manufacturer;
+                document.getElementById('confidence').textContent = data.confidence;
+                document.getElementById('result').style.display = 'block';
+            }
+            else {
+    document.getElementById('result').innerHTML = `
+        <h2>⚠️ Medicine Not Found</h2>
+        <p>Could not identify the medicine clearly.</p>
+        <p>Please try again with:</p>
+        <ul>
+            <li>Capture the composition part clearly</li>
+            <li>Take photo in good lighting</li>
+            <li>Hold camera straight without angle</li>
+        </ul>
+    `;
+    document.getElementById('result').style.display = 'block';
+}
+            // } else {
+            //     alert('Medicine not found!\nExtracted text: ' + data.extracted_text);
+            // }
+        }
+    </script>
+</body>
+</html>
