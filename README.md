@@ -1,7 +1,9 @@
 Smart Medicine Identifier
+
 An AI-powered medicine identification system that recognizes medicines from images using OCR and Retrieval-Augmented Generation (RAG). The application extracts text from medicine packaging, identifies the medicine using semantic search, and provides detailed information including composition, uses, side effects, and manufacturer.
 
 Features:
+
 Upload an image of a medicine strip, bottle, or packaging
 Extracts text using EasyOCR
 Identifies medicines using Sentence Transformers + FAISS
@@ -11,6 +13,7 @@ Fast semantic search using vector embeddings
 User-friendly Flask web interface
 
 Technologies Used:
+
 Programming Language
 - Python
   
